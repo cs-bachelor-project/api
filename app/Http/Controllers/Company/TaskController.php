@@ -22,10 +22,6 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->hasAnyRole('driver')) {
-            return TaskResource::collection(withRelations($request->user()->tasks()->filter($request)->paginate(10)->appends($request->except(['page', 'token']))))->response()->setStatusCode(200);
-        }
-
         $tasks = new Task;
 
         if($request->get('status') == 'completed') {

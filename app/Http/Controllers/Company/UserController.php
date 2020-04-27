@@ -152,7 +152,7 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of the resource's drivers.
+     * Display a listing of the drivers.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
