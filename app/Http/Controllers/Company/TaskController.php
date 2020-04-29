@@ -12,7 +12,7 @@ class TaskController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin,manager')->except('index');
+        $this->middleware('role:admin,manager');
     }
 
     /**
@@ -32,11 +32,7 @@ class TaskController extends Controller
             $tasks = $tasks->uncompleted();
         }
 
-        if ($request->user()->hasAnyRole('admin', 'manager')) {
-            return TaskResource::collection(withRelations($tasks->orderBy('id', 'desc')->filter($request)->paginate(10)->appends($request->except(['page', 'token']))))->response()->setStatusCode(200);
-        }
-
-        return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
+        return TaskResource::collection(withRelations($tasks->orderBy('id', 'desc')->filter($request)->paginate(10)->appends($request->except(['page', 'token']))))->response()->setStatusCode(200);
     }
 
     /**
