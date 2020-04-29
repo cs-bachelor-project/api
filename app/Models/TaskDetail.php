@@ -16,7 +16,7 @@ class TaskDetail extends Model
         'city',
         'street',
         'street_number',
-        'task',
+        'action',
         'scheduled_at',
         'completed_at',
         'task_id',

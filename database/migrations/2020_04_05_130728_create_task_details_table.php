@@ -19,7 +19,7 @@ class CreateTaskDetailsTable extends Migration
             $table->string("city");
             $table->string("street");
             $table->string("street_number");
-            $table->string("task", 4)->default("pick");
+            $table->string("action", 4)->default("pick");
             $table->timestamp("scheduled_at");
             $table->timestamp("completed_at")->nullable();
             $table->foreignId("task_id");

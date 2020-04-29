@@ -20,9 +20,10 @@ class TaskDetailResource extends JsonResource
             'city' => $this->city,
             'street' => $this->street,
             'street_number' => $this->street_number,
-            'task' => $this->task,
+            'action' => $this->action,
             'scheduled_at' => is_null($this->scheduled_at) ? null : $this->scheduled_at->toDateTimeString(),
             'completed_at' => is_null($this->completed_at) ? null : $this->completed_at->toDateTimeString(),
+            'task' => new TaskResource($this->whenLoaded('task')),
         ];
     }
 }
