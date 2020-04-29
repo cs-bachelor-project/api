@@ -29,8 +29,8 @@ class DatabaseSeeder extends Seeder
 
             factory(User::class, 4)->create(['company_id' => $company->id])->each(function ($driver) use ($company, $driverRole) {
                 factory(Task::class, 10)->create(['user_id' => $driver->id, 'company_id' => $company->id])->each(function ($task) {
-                    factory(TaskDetail::class)->create(['task' => 'pick', 'task_id' => $task->id]);
-                    factory(TaskDetail::class)->create(['task' => 'drop', 'task_id' => $task->id]);
+                    factory(TaskDetail::class)->create(['action' => 'pick', 'task_id' => $task->id]);
+                    factory(TaskDetail::class)->create(['action' => 'drop', 'task_id' => $task->id]);
                 });
 
                 $driver->roles()->attach($driverRole);
