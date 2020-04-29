@@ -23,7 +23,8 @@ $factory->define(TaskDetail::class, function (Faker $faker) {
         'city' => $faker->city,
         'street' => $faker->streetName,
         'street_number' => $faker->randomNumber(),
-        'task' => $faker->randomElement(['pick', 'drop']),
+        'phone' => $faker->phoneNumber,
+        'action' => $faker->randomElement(['pick', 'drop']),
         'scheduled_at' => $faker->dateTimeBetween('-5 months', $endDate = '+5 months'),
         'task_id' => factory(Task::class),
     ];
