@@ -45,4 +45,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('users/{user}/tasks', 'UserController@tasks')->name('users.tasks');
         Route::post('users/{user}/roles', 'UserController@changeRoles')->name('users.roles.change');
     });
+
+    Route::group(['prefix' => 'drivers', 'namespace' => 'Driver'], function () {
+        Route::get('tasks', 'TaskDetailController@index')->name('taskdetails.index');
+        Route::patch('tasks/{detail}', 'TaskDetailController@complete')->name('taskdetails.complete');
+    });
 });
