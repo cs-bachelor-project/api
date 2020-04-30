@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
@@ -55,12 +56,17 @@ class AuthController extends Controller
     public function update(Request $request)
     {
         $id = auth()->user()->id;
-        $data = $request->validate([
-            'name' => 'string|max:255',
-            'email' => "string|email|max:255|unique:users,email,{$id}",
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => "email|max:255|unique:users,email,{$id}",
         ]);
 
-        auth()->user()->update($data);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        auth()->user()->update($request->all());
 
         return response()->json(['message' => "The changes were saved successfully."]);
     }
@@ -76,17 +82,19 @@ class AuthController extends Controller
             return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
         }
 
-        $data = $request->validate(
-            [
-                'name' => 'required|string|max:255',
-                'country' => 'required|string|max:255',
-                'city' => 'required|string|max:255',
-                'street' => 'required|string|max:255',
-                'street_number' => 'required|string|max:255',
-            ],
-        );
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'country' => 'required|max:255',
+            'city' => 'required|max:255',
+            'street' => 'required|max:255',
+            'street_number' => 'required|max:255',
+        ]);
 
-        auth()->user()->company()->update($data);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+        
+        auth()->user()->company()->update($request->all());
 
         return response()->json(['message' => "The changes were saved successfully."]);
     }
@@ -98,12 +106,16 @@ class AuthController extends Controller
      */
     public function password(Request $request)
     {
-        $data = $request->validate([
-            'password' => 'required|string|min:6|confirmed',
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:6|confirmed',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
         auth()->user()->update([
-            'password' => bcrypt($data['password']),
+            'password' => bcrypt($request->get('password')),
         ]);
 
         return response()->json(['message' => 'The password was updated successfully.']);

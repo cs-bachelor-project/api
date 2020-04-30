@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -37,21 +38,25 @@ class UserController extends Controller
             return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
         }
 
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'roles' => 'required|array|min:1'
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'roles' => 'required|array|min:1',
         ]);
 
-        DB::transaction(function () use ($data) {
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        DB::transaction(function () use ($request) {
             $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'password' => bcrypt($request->get('password')),
             ]);
 
-            $user->roles()->sync($data['roles']);
+            $user->roles()->sync($request->get('roles'));
         });
 
         return response()->json(['message' => 'The User was created successfully.']);
@@ -85,12 +90,16 @@ class UserController extends Controller
             return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
         }
 
-        $data = $request->validate([
-            'name' => 'string|max:255',
-            'email' => "string|email|max:255|unique:users,email,{$user->id}",
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => "email|max:255|unique:users,email,{$user->id}",
         ]);
 
-        $user->update($data);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        $user->update($request->all());
 
         return response()->json(['message' => "{$user->name} was updated successfully."]);
     }
@@ -108,11 +117,15 @@ class UserController extends Controller
             return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
         }
 
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'roles' => 'required|array|min:1'
         ]);
 
-        $user->roles()->sync($data['roles']);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        $user->roles()->sync($request->all('roles'));
 
         return response()->json(['message' => "Roles for {$user->name} were updated successfully."]);
     }

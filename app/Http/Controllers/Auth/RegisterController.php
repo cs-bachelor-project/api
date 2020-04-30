@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -17,47 +18,49 @@ class RegisterController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate(
-            [
-                'company.name' => 'required|string|max:255',
-                'company.country' => 'required|string|max:255',
-                'company.city' => 'required|string|max:255',
-                'company.street' => 'required|string|max:255',
-                'company.street_number' => 'required|string|max:255',
-                'user.name' => 'required|string|max:255',
-                'user.email' => 'required|string|email|max:255|unique:users,email',
-                'user.password' => 'required|string|min:6|confirmed',
-            ],
-            [
-                'company.name.required' => 'The company name is required.',
-                'company.country.required' => 'The country is required.',
-                'company.city.required' => 'The city is required.',
-                'company.street.required' => 'The street is required.',
-                'company.street_number.required' => 'The street number is required.',
-                'user.name.required' => 'Your name is required.',
-                'user.email.required' => 'Your email is required.',
-                'user.email.email' => 'Your email must be a valid email address.',
-                'user.email.unique' => 'The email has already been taken.',
-                'user.password.required' => 'The password is required.',
-                'user.password.confirmed' => 'The password confirmation does not match.',
-                'user.password.min' => 'The password must be at least 6 characters.',
-                ]
-            );
+        $validator = Validator::make($request->all(),             [
+            'company.name' => 'required|max:255',
+            'company.country' => 'required|max:255',
+            'company.city' => 'required|max:255',
+            'company.street' => 'required|max:255',
+            'company.street_number' => 'required|max:255',
+            'user.name' => 'required|max:255',
+            'user.email' => 'required|email|max:255|unique:users,email',
+            'user.password' => 'required|min:6|confirmed',
+        ],
+        [
+            'company.name.required' => 'The company name is required.',
+            'company.country.required' => 'The country is required.',
+            'company.city.required' => 'The city is required.',
+            'company.street.required' => 'The street is required.',
+            'company.street_number.required' => 'The street number is required.',
+            'user.name.required' => 'Your name is required.',
+            'user.email.required' => 'Your email is required.',
+            'user.email.email' => 'Your email must be a valid email address.',
+            'user.email.unique' => 'The email has already been taken.',
+            'user.password.required' => 'The password is required.',
+            'user.password.confirmed' => 'The password confirmation does not match.',
+            'user.password.min' => 'The password must be at least 6 characters.',
+        ]);
 
-        DB::transaction(function () use ($data) {
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        DB::transaction(function () use ($request) {
             $company = Company::create([
-                'name' => $data['company']['name'],
-                'country' => $data['company']['country'],
-                'city' => $data['company']['city'],
-                'street' => $data['company']['street'],
-                'street_number' => $data['company']['street_number'],
+                'name' => $request->input('company.name'),
+                'country' => $request->input('company.country'),
+                'city' => $request->input('company.city'),
+                'street' => $request->input('company.street'),
+                'street_number' => $request->input('company.street_number'),
             ]);
 
 
             $user = $company->users()->create([
-                'name' => $data['user']['name'],
-                'email' => $data['user']['email'],
-                'password' => bcrypt($data['user']['password']),
+                'name' => $request->input('user.name'),
+                'email' => $request->input('user.email'),
+                'password' => bcrypt($request->input('user.password')),
             ]);
 
             $user->roles()->attach(1);

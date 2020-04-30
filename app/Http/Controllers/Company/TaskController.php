@@ -7,9 +7,35 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Resources\TaskResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
+    protected $rules = [
+            'person_name' => 'required|max:255',
+            'details.*.city' => 'required|max:255',
+            'details.*.street' => 'required|max:255',
+            'details.*.street_number' => 'required|max:255',
+            'details.*.action' => 'required|max:4',
+            'details.*.scheduled_at' => 'required|date',
+    ];
+
+    protected $customMessages = [
+        'person_name.required' => 'The passenger name is required.',
+        'details.0.city.required' => 'The pick up city is required.',
+        'details.0.street.required' => 'The pick up street is required.',
+        'details.0.street_number.required' => 'The pick up street number is required.',
+        'details.0.action.required' => 'The pick up action is required.',
+        'details.0.scheduled_at.required' => 'The pick up time is required.',
+        'details.0.scheduled_at.date' => 'The pick up date is not a valid date',
+        'details.1.city.required' => 'The drop off city is required.',
+        'details.1.street.required' => 'The drop off street is required.',
+        'details.1.street_number.required' => 'The drop off street number is required.',
+        'details.1.action.required' => 'The drop off action is required.',
+        'details.1.scheduled_at.required' => 'The drop off time is required.',
+        'details.1.scheduled_at.date' => 'The drop off date is not a valid date',
+    ];
+
     public function __construct()
     {
         $this->middleware('role:admin,manager');
@@ -43,6 +69,12 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), $this->rules, $this->customMessages);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
         $task = Task::create($request->except('details'));
 
         if ($request->get('details')) {
@@ -72,6 +104,12 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        $validator = Validator::make($request->all(), $this->rules, $this->customMessages);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
         DB::transaction(function () use ($request, $task) {
             $task->update($request->except('details'));
 
@@ -82,7 +120,7 @@ class TaskController extends Controller
             }
         });
 
-        return response()->json(['message' => "Task #{$task->id} was updated successfully."]);
+        return response()->json(['message' => "The task was updated successfully."]);
     }
 
     /**
@@ -95,7 +133,7 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        return response()->json(['message' => "Task #{$task->id} was deleted successfully."]);
+        return response()->json(['message' => "The task was deleted successfully."]);
     }
 
     /**
@@ -106,7 +144,7 @@ class TaskController extends Controller
     public function search(Request $request)
     {
         if (!$request->get('q')) {
-            return response()->json(['message' => 'No search term was entered.'], 200);
+            return response()->json(['message' => 'No search term was entered.'], 422);
         }
 
         $tasks = Task::search($request->get('q'));
