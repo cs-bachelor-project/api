@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('auth/register', 'Auth\RegisterController@store');
 Route::post('auth/login', 'Auth\AuthController@login');
+Route::post('auth/forgot', 'Auth\PasswordResetController@forgot');
+Route::post('auth/reset/{token}', 'Auth\PasswordResetController@reset');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
