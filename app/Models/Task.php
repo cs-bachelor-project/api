@@ -6,7 +6,6 @@ use App\Traits\Searchable;
 use App\Traits\Filterable;
 use App\Traits\Multitenantable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Task extends Model
 {

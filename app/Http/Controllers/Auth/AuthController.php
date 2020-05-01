@@ -32,7 +32,7 @@ class AuthController extends Controller
                 return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
             }
         } catch (JWTException $e) {
-            return response()->json(['message' => 'An error occured while creating the token', 'message' => $e->getMessage()], 500);
+            return response()->json(['message' => 'An error occured while creating the token'], 500);
         }
 
         return $this->respondWithToken($token);
