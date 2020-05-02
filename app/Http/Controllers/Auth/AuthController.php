@@ -83,8 +83,10 @@ class AuthController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'cvr' => 'required|size:8',
             'name' => 'required|max:255',
             'country' => 'required|max:255',
+            'postal' => 'required|size:4',
             'city' => 'required|max:255',
             'street' => 'required|max:255',
             'street_number' => 'required|max:255',

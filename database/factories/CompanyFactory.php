@@ -4,6 +4,7 @@
 
 use App\Models\Company;
 use Faker\Generator as Faker;
+use Faker\Provider\da_DK\Address;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +19,10 @@ use Faker\Generator as Faker;
 
 $factory->define(Company::class, function (Faker $faker) {
     return [
+        'cvr' => $faker->cvr,
         'name' => $faker->name,
         'country' => 'Denmark',
+        'postal' => Address::postcode(),
         'city' => $faker->city,
         'street' => $faker->streetName,
         'street_number' => $faker->randomNumber(),

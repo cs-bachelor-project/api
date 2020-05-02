@@ -19,8 +19,10 @@ class RegisterController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),             [
+            'company.cvr' => 'required|size:8',
             'company.name' => 'required|max:255',
             'company.country' => 'required|max:255',
+            'company.postal' => 'required|size:4',
             'company.city' => 'required|max:255',
             'company.street' => 'required|max:255',
             'company.street_number' => 'required|max:255',
@@ -29,8 +31,12 @@ class RegisterController extends Controller
             'user.password' => 'required|min:6|confirmed',
         ],
         [
+            'company.cvr.required' => 'The CVR is required.',
+            'company.cvr.size' => 'The CVR must be of 8 digits.',
             'company.name.required' => 'The company name is required.',
             'company.country.required' => 'The country is required.',
+            'company.postal.required' => 'The postal code is required.',
+            'company.postal.size' => 'The postal code must be of 4 digits.',
             'company.city.required' => 'The city is required.',
             'company.street.required' => 'The street is required.',
             'company.street_number.required' => 'The street number is required.',
@@ -49,8 +55,10 @@ class RegisterController extends Controller
 
         DB::transaction(function () use ($request) {
             $company = Company::create([
+                'cvr' => $request->input('company.cvr'),
                 'name' => $request->input('company.name'),
                 'country' => $request->input('company.country'),
+                'postal' => $request->input('company.postal'),
                 'city' => $request->input('company.city'),
                 'street' => $request->input('company.street'),
                 'street_number' => $request->input('company.street_number'),
