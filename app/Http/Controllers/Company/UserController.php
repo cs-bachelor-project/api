@@ -125,7 +125,7 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
-        $user->roles()->sync($request->all('roles'));
+        $user->roles()->sync($request->get('roles'));
 
         return response()->json(['message' => "Roles for {$user->name} were updated successfully."]);
     }
