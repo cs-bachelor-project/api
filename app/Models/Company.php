@@ -28,4 +28,12 @@ class Company extends Model
     {
         return $this->hasMany('App\Models\User');
     }
+
+    /**
+     * Get the messages of the company.
+     */
+    public function messages()
+    {
+        return $this->hasMany('App\Models\Message');
+    }
 }

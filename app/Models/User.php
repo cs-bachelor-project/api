@@ -96,4 +96,13 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Models\Task');
     }
+
+    
+    /**
+     * Get the messages of the company.
+     */
+    public function messages()
+    {
+        return $this->hasMany('App\Models\Message');
+    }
 }

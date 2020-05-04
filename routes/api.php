@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('drivers', 'UserController@drivers')->name('users.drivers');
         Route::get('users/{user}/tasks', 'UserController@tasks')->name('users.tasks');
         Route::post('users/{user}/roles', 'UserController@changeRoles')->name('users.roles.change');
+        Route::post('messages', 'MessageController@store')->name('messages.store');
     });
 
     Route::group(['prefix' => 'drivers', 'namespace' => 'Driver'], function () {
