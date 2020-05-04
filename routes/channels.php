@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('task.of.{id}', function ($user, $userId) {
+    return $user->id == $userId;
+});
+
+Broadcast::channel('company.{id}.info', function ($user, $companyId) {
+    if ($user->hasAnyRole(['admin', 'manager'])) {
+        return $user->company_id == $companyId;
+    }
+
+    return false;
+});
+
+Broadcast::channel('company.{id}.msg', function ($user, $companyId) {
+    if ($user->hasAnyRole(['driver'])) {
+        return $user->company_id == $companyId;
+    }
+
+    return false;
 });

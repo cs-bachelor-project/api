@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Driver;
 
+use App\Events\TaskDetailCompleted;
 use App\Http\Controllers\Controller;
 use App\Models\TaskDetail;
 use Illuminate\Http\Request;
@@ -44,6 +45,8 @@ class TaskDetailController extends Controller
         $detail->update([
             'completed_at' => $date->toDateTimeString(),
         ]);
+
+        event(new TaskDetailCompleted($detail));
 
         return response()->json(['message' => 'Marked as completed']);
     }

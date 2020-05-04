@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Company;
 
+use App\Events\TaskAssigned;
+use App\Events\TaskUnassigned;
+use App\Events\TaskUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -86,6 +89,10 @@ class TaskController extends Controller
             $task->details()->createMany($request->get('details'));
         }
 
+        if ($request->get('user_id') != null) {
+            event(new TaskAssigned($task));
+        }
+
         return response()->json(['message' => "The task was created successfully."]);
     }
 
@@ -115,6 +122,8 @@ class TaskController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
+        $previousUserId = $task->user_id;
+
         DB::transaction(function () use ($request, $task) {
             $task->update($request->except('details'));
 
@@ -124,6 +133,18 @@ class TaskController extends Controller
                 }
             }
         });
+
+        if ($previousUserId != null && $previousUserId != $request->get('user_id')) {
+            event(new TaskUnassigned($task, $previousUserId));
+        }
+
+        if ($request->get('user_id') != null && $request->get('user_id') == $previousUserId) {
+            event(new TaskUpdated($task));
+        }
+
+        if ($request->get('user_id') != null && $request->get('user_id') != $previousUserId) {
+            event(new TaskAssigned($task));
+        }
 
         return response()->json(['message' => "The task was updated successfully."]);
     }
@@ -136,6 +157,10 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        if ($task->user_id != null) {
+            event(new TaskUnassigned($task, $task->user_id));
+        }
+
         $task->delete();
 
         return response()->json(['message' => "The task was deleted successfully."]);
