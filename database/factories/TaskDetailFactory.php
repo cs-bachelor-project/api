@@ -5,6 +5,7 @@
 use App\Models\TaskDetail;
 use App\Models\Task;
 use Faker\Generator as Faker;
+use Faker\Provider\da_DK\Address;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ use Faker\Generator as Faker;
 $factory->define(TaskDetail::class, function (Faker $faker) {
     return [
         'country' => 'Denmark',
+        'postal' => Address::postcode(),
         'city' => $faker->city,
         'street' => $faker->streetName,
         'street_number' => $faker->randomNumber(),

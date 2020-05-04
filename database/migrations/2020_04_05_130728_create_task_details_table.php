@@ -16,6 +16,7 @@ class CreateTaskDetailsTable extends Migration
         Schema::create('task_details', function (Blueprint $table) {
             $table->id();
             $table->string("country")->default("Denmark");
+            $table->integer("postal");
             $table->string("city");
             $table->string("street");
             $table->string("street_number");

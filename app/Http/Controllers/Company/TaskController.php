@@ -12,22 +12,27 @@ use Illuminate\Support\Facades\Validator;
 class TaskController extends Controller
 {
     protected $rules = [
-            'person_name' => 'required|max:255',
-            'details.*.city' => 'required|max:255',
-            'details.*.street' => 'required|max:255',
-            'details.*.street_number' => 'required|max:255',
-            'details.*.action' => 'required|max:4',
-            'details.*.scheduled_at' => 'required|date',
+        'person_name' => 'required|max:255',
+        'details.*.postal' => 'required|size:4',
+        'details.*.city' => 'required|max:255',
+        'details.*.street' => 'required|max:255',
+        'details.*.street_number' => 'required|max:255',
+        'details.*.action' => 'required|max:4',
+        'details.*.scheduled_at' => 'required|date',
     ];
 
     protected $customMessages = [
         'person_name.required' => 'The passenger name is required.',
+        'details.0.postal.required' => 'The pick up postal code is required.',
+        'details.0.postal.size' => 'The pick up postal code must be of 4 digits.',
         'details.0.city.required' => 'The pick up city is required.',
         'details.0.street.required' => 'The pick up street is required.',
         'details.0.street_number.required' => 'The pick up street number is required.',
         'details.0.action.required' => 'The pick up action is required.',
         'details.0.scheduled_at.required' => 'The pick up time is required.',
         'details.0.scheduled_at.date' => 'The pick up date is not a valid date',
+        'details.1.postal.required' => 'The drop off postal code is required.',
+        'details.1.postal.size' => 'The drop off postal code must be of 4 digits.',
         'details.1.city.required' => 'The drop off city is required.',
         'details.1.street.required' => 'The drop off street is required.',
         'details.1.street_number.required' => 'The drop off street number is required.',
@@ -50,11 +55,11 @@ class TaskController extends Controller
     {
         $tasks = new Task;
 
-        if($request->get('status') == 'completed') {
+        if ($request->get('status') == 'completed') {
             $tasks = $tasks->completed();
         }
 
-        if($request->get('status') == 'uncompleted') {
+        if ($request->get('status') == 'uncompleted') {
             $tasks = $tasks->uncompleted();
         }
 
@@ -149,11 +154,11 @@ class TaskController extends Controller
 
         $tasks = Task::search($request->get('q'));
 
-        if($request->get('status') == 'completed') {
+        if ($request->get('status') == 'completed') {
             $tasks = $tasks->completed();
         }
 
-        if($request->get('status') == 'uncompleted') {
+        if ($request->get('status') == 'uncompleted') {
             $tasks = $tasks->uncompleted();
         }
 

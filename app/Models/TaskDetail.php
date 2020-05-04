@@ -13,6 +13,7 @@ class TaskDetail extends Model
      */
     protected $fillable = [
         'country',
+        'postal',
         'city',
         'street',
         'street_number',
