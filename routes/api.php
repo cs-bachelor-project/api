@@ -50,7 +50,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::group(['prefix' => 'drivers', 'namespace' => 'Driver'], function () {
-        Route::get('tasks', 'TaskDetailController@index')->name('taskdetails.index');
-        Route::patch('tasks/{detail}', 'TaskDetailController@complete')->name('taskdetails.complete');
+        Route::get('tasks/details', 'TaskDetailController@index')->name('taskdetails.index');
+        Route::patch('tasks/details/{detail}', 'TaskDetailController@complete')->name('taskdetails.complete');
     });
 });
