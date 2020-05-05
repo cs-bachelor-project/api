@@ -20,6 +20,7 @@ class TaskResource extends JsonResource
             'note' => $this->note,
             'user_id' => $this->user_id,
             'details' => TaskDetailResource::collection($this->whenLoaded('details')),
+            'cancellation' => new TaskCancellationResource($this->whenLoaded('cancellation')),
             'user' => new UserResource($this->whenLoaded('user')),
         ];
     }

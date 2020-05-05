@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::group(['prefix' => 'drivers', 'namespace' => 'Driver'], function () {
+        Route::post('tasks/{task}/cancellations', 'TaskController@cancel')->name('task.cancel');
         Route::get('tasks/details', 'TaskDetailController@index')->name('taskdetails.index');
         Route::patch('tasks/details/{detail}', 'TaskDetailController@complete')->name('taskdetails.complete');
     });

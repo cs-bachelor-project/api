@@ -66,6 +66,10 @@ class TaskController extends Controller
             $tasks = $tasks->uncompleted();
         }
 
+        if ($request->get('status') == 'cancelled') {
+            $tasks = $tasks->has('cancellation');
+        }
+
         return TaskResource::collection(withRelations($tasks->orderBy('id', 'desc')->filter($request)->paginate(10)->appends($request->except(['page', 'token']))))->response()->setStatusCode(200);
     }
 
@@ -134,16 +138,18 @@ class TaskController extends Controller
             }
         });
 
-        if ($previousUserId != null && $previousUserId != $request->get('user_id')) {
-            event(new TaskUnassigned($task, $previousUserId));
-        }
+        if ($task->cancellation == null) {
+            if ($previousUserId != null && $previousUserId != $request->get('user_id')) {
+                event(new TaskUnassigned($task, $previousUserId));
+            }
 
-        if ($request->get('user_id') != null && $request->get('user_id') == $previousUserId) {
-            event(new TaskUpdated($task));
-        }
+            if ($request->get('user_id') != null && $request->get('user_id') == $previousUserId) {
+                event(new TaskUpdated($task));
+            }
 
-        if ($request->get('user_id') != null && $request->get('user_id') != $previousUserId) {
-            event(new TaskAssigned($task));
+            if ($request->get('user_id') != null && $request->get('user_id') != $previousUserId) {
+                event(new TaskAssigned($task));
+            }
         }
 
         return response()->json(['message' => "The task was updated successfully."]);
@@ -157,7 +163,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        if ($task->user_id != null) {
+        if ($task->user_id != null && $task->cancellation == null) {
             event(new TaskUnassigned($task, $task->user_id));
         }
 

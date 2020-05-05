@@ -74,4 +74,12 @@ class Task extends Model
     {
         return $this->hasMany('App\Models\TaskDetail');
     }
+
+    /**
+     * Get the cancellation of the task.
+     */
+    public function cancellation()
+    {
+        return $this->hasOne('App\Models\TaskCancellation');
+    }
 }

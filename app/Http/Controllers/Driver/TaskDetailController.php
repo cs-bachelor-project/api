@@ -27,7 +27,7 @@ class TaskDetailController extends Controller
         $date = $request->get('date') ? Carbon::createFromFormat('Y-m-d', $request->get('date'))->toDateString() : Carbon::today()->toDateString();
 
         $tasks = TaskDetail::whereDate('scheduled_at', $date)->whereHas('task', function ($q) {
-            $q->where('user_id', auth()->id());
+            $q->where('user_id', auth()->id())->doesnthave('cancellation');
         })->orderBy('scheduled_at', 'asc')->get();
 
         return TaskDetailResource::collection(withRelations($tasks))->response()->setStatusCode(200);
