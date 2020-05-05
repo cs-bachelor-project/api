@@ -23,7 +23,7 @@ class TaskUpdated implements ShouldBroadcast
      */
     public function __construct(Task $task)
     {
-        $this->task = $task->load('details');
+        $this->task = $task;
     }
 
     /**

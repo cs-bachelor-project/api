@@ -59,7 +59,7 @@ class UserController extends Controller
             $user->roles()->sync($request->get('roles'));
         });
 
-        return response()->json(['message' => 'The User was created successfully.']);
+        return response()->json(['message' => 'The user was created successfully.']);
     }
 
     /**

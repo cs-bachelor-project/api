@@ -22,7 +22,7 @@ class TaskDetailCompleted implements ShouldBroadcast
      */
     public function __construct(TaskDetail $detail)
     {
-        $this->detail = $detail->load('task');
+        $this->detail = $detail;
     }
 
     /**
