@@ -81,6 +81,8 @@ class RegisterController extends Controller
 
         $this->successMail($request->input('user.email'), $request->input('user.name'), $request->input('company.name'));
 
+        $this->createStripeCustomer($request->get('company'), $request->get('user'));
+
         return response()->json([
             'message' => 'Registration completed successfully',
         ], 201);
@@ -115,5 +117,19 @@ class RegisterController extends Controller
         ];
 
         $mj->post(MailjetResources::$Email, ['body' => $body]);
+    }
+
+    public function createStripeCustomer($company, $user)
+    {
+        Company::firstWhere('cvr', $company['cvr'])->createAsStripeCustomer([
+            'name' => $company['name'],
+            'email' => $user['email'],
+            'address' => [
+                'line1' => "{$company['street']} {$company['street_number']}",
+                'city' => $company['city'],
+                'country' => $company['country'],
+                'postal_code' => $company['postal'],
+            ]
+        ]);
     }
 }

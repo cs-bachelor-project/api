@@ -7,11 +7,14 @@ use App\Http\Resources\TaskResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use App\Traits\MaxDrivers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    use MaxDrivers;
+
     /**
      * Display a listing of the resource.
      *
@@ -36,6 +39,12 @@ class UserController extends Controller
     {
         if (!$request->user()->hasAnyRole('admin')) {
             return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
+        }
+        
+        if (in_array(3, $request->get('roles'))) {
+            if ($this->notReachedMaxDrivers() != false) {
+                return $this->notReachedMaxDrivers();
+            }
         }
 
         $validator = Validator::make($request->all(), [
@@ -117,6 +126,12 @@ class UserController extends Controller
             return response()->json(['message' => 'You are not authorised to perform this action.'], 401);
         }
 
+        if (in_array(3, $request->get('roles'))) {
+            if ($this->notReachedMaxDrivers() != false) {
+                return $this->notReachedMaxDrivers();
+            }
+        }
+        
         $validator = Validator::make($request->all(), [
             'roles' => 'required|array|min:1'
         ]);

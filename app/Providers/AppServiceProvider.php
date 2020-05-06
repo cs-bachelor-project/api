@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Http\Requests\RequestQueryWithRelations;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('withRelations', function () {
             return new RequestQueryWithRelations;
         });
+
+        Cashier::ignoreMigrations();
     }
 
     /**

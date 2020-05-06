@@ -35,6 +35,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::group(['prefix' => 'companies', 'namespace' => 'Company'], function () {
+        Route::get('subscriptions', 'SubscriptionController@index')->name('subscriptions.index');
+        Route::post('subscriptions', 'SubscriptionController@store')->name('subscriptions.store');
+        Route::patch('subscriptions', 'SubscriptionController@update')->name('subscriptions.update');
         Route::get('tasks/search', 'TaskController@search')->name('tasks.search');
 
         Route::resources([
