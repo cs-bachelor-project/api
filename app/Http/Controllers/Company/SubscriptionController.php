@@ -48,7 +48,7 @@ class SubscriptionController extends Controller
         if ($current_drivers > $new_max_drivers->value) {
             return response()->json([
                 'errors' => [
-                    "You must delete {$diff} driver(s) to change you subscription."
+                    "You must delete {$diff} driver(s) to change downgrade."
                 ]
             ], 400);
         }
