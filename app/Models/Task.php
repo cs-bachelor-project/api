@@ -31,6 +31,12 @@ class Task extends Model
     protected $searchable = [
         'person_name',
         'note',
+        'details' => [
+            'postal',
+            'city',
+            'street',
+            'phone',
+        ],
     ];
 
     /**

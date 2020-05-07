@@ -193,6 +193,10 @@ class TaskController extends Controller
             $tasks = $tasks->uncompleted();
         }
 
+        if ($request->get('status') == 'cancelled') {
+            $tasks = $tasks->has('cancellation');
+        }
+        
         return TaskResource::collection(withRelations($tasks->orderBy('id', 'desc')->paginate(10)->appends($request->except(['page', 'token']))))->response()->setStatusCode(200);
     }
 }
