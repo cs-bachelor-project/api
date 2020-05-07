@@ -22,6 +22,8 @@ Route::post('auth/register', 'Auth\RegisterController@store');
 Route::post('auth/login', 'Auth\AuthController@login');
 Route::post('auth/forgot', 'Auth\PasswordResetController@forgot');
 Route::post('auth/reset/{token}', 'Auth\PasswordResetController@reset');
+Route::get('companies', 'CompanyController@index');
+Route::post('tasks', 'TaskController@store')->name('tasks.book');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
@@ -41,7 +43,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('tasks/search', 'TaskController@search')->name('tasks.search');
 
         Route::resources([
-            'companies' => 'CompanyController',
             'users' => 'UserController',
             'tasks' => 'TaskController',
         ]);
