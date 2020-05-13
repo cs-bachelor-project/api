@@ -6,6 +6,7 @@ use App\Events\NewTask;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
@@ -62,8 +63,26 @@ class TaskController extends Controller
             $task->details()->createMany($request->get('details'));
         }
 
-        event((new NewTask($task)));
+        event(new NewTask($task));
+
+        $pick_time = $request->input('details.0.scheduled_at');
+        $pick_location = "{$request->input('details.0.street')} {$request->input('details.0.street_number')} {$request->input('details.0.city')} {$request->input('details.0.postal')}";
+        $drop_time = $request->input('details.1.scheduled_at');
+        $drop_location = "{$request->input('details.1.street')} {$request->input('details.1.street_number')} {$request->input('details.1.city')} {$request->input('details.1.postal')}";
+
+        if ($request->input('details.0.phone')) {
+            $this->successSms($request->get('person_name'), $request->input('details.0.phone'), $pick_time, $pick_location, $drop_time, $drop_location);
+        }
 
         return response()->json(['message' => 'Your booking has been received.']);
+    }
+
+    public function successSms($name, $phone, $pick_time, $pick_location, $drop_time, $drop_location)
+    {
+        return Http::withBasicAuth(env('GATEWAY_API_TOKEN'), '')->post('https://gatewayapi.com/rest/mtsms', [
+            'sender' => 'Test SMS',
+            'message' => "Hej {$name}\nTak for at vælge os.\n\nAfgang fra {$pick_location} er kl. {$pick_time}\n\nAnkomst til {$drop_location} er kl. {$drop_time}",
+            'recipients' => [['msisdn' => "45{$phone}"]],
+        ]);
     }
 }
