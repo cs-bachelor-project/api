@@ -8,9 +8,6 @@ cache:
   directories:
     - vendor
 
-services:
-  - sqlite
-
 before_script:
   - cp .env.travis .env
   - composer self-update
