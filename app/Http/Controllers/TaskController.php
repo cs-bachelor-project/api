@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\NewTask;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -65,9 +66,9 @@ class TaskController extends Controller
 
         event(new NewTask($task));
 
-        $pick_time = $request->input('details.0.scheduled_at');
+        $pick_time = Carbon::parse($request->input('details.0.scheduled_at'))->format('d-m-y H:i');
         $pick_location = "{$request->input('details.0.street')} {$request->input('details.0.street_number')} {$request->input('details.0.city')} {$request->input('details.0.postal')}";
-        $drop_time = $request->input('details.1.scheduled_at');
+        $drop_time = Carbon::parse($request->input('details.1.scheduled_at'))->format('d-m-y H:i');
         $drop_location = "{$request->input('details.1.street')} {$request->input('details.1.street_number')} {$request->input('details.1.city')} {$request->input('details.1.postal')}";
 
         if ($request->input('details.0.phone')) {
@@ -80,8 +81,8 @@ class TaskController extends Controller
     public function successSms($name, $phone, $pick_time, $pick_location, $drop_time, $drop_location)
     {
         return Http::withBasicAuth(env('GATEWAY_API_TOKEN'), '')->post('https://gatewayapi.com/rest/mtsms', [
-            'sender' => 'Test SMS',
-            'message' => "Hej {$name}\nTak for at vælge os.\n\nAfgang fra {$pick_location} er kl. {$pick_time}\n\nAnkomst til {$drop_location} er kl. {$drop_time}",
+            'sender' => 'Your Driver',
+            'message' => "Hej {$name}\nTak for at vælge os.\n\nAfgang fra {$pick_location} er kl. {$pick_time}\n\nAnkomst til {$drop_location} er kl. {$drop_time}\n\nHilsen\nYour Driver",
             'recipients' => [['msisdn' => "45{$phone}"]],
         ]);
     }
