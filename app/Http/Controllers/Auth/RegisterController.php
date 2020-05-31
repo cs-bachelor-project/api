@@ -23,7 +23,7 @@ class RegisterController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'company.cvr' => 'required|size:8',
+                'company.cvr' => 'required|size:8|unique:companies,cvr',
                 'company.name' => 'required|max:255',
                 'company.country' => 'required|max:255',
                 'company.postal' => 'required|size:4',
@@ -37,6 +37,7 @@ class RegisterController extends Controller
             [
                 'company.cvr.required' => 'The CVR is required.',
                 'company.cvr.size' => 'The CVR must be of 8 digits.',
+                'company.cvr.unique' => 'A company with this CVR is already registered.',
                 'company.name.required' => 'The company name is required.',
                 'company.country.required' => 'The country is required.',
                 'company.postal.required' => 'The postal code is required.',
