@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Company;
+use App\Models\PlanOption;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\TaskDetail;
@@ -20,8 +21,6 @@ class DatabaseSeeder extends Seeder
         $manager = factory(Role::class)->create(['name' => 'manager', 'title' => 'Manager']);
         $driverRole = factory(Role::class)->create(['name' => 'driver', 'title' => 'Driver']);
 
-
-
         factory(Company::class, 5)->create()->each(function ($company) use ($adminRole, $manager, $driverRole) {
             factory(User::class)->create(['company_id' => $company->id])->roles()->attach($adminRole);
 
@@ -36,5 +35,9 @@ class DatabaseSeeder extends Seeder
                 $driver->roles()->attach($driverRole);
             });
         });
+
+        factory(PlanOption::class)->create(['stripe_plan' => 'plan_HDtLlsSL3sqIYg', 'option' => 'max-drivers', 'value' => '5']);
+        factory(PlanOption::class)->create(['stripe_plan' => 'plan_HDtLX0PusTLGI0', 'option' => 'max-drivers', 'value' => '15']);
+        factory(PlanOption::class)->create(['stripe_plan' => 'plan_HDtMYrR7fKDDkh', 'option' => 'max-drivers', 'value' => '50']);
     }
 }
