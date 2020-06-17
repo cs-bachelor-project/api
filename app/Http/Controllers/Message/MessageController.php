@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Company;
+namespace App\Http\Controllers\Message;
 
 use App\Events\Messaged;
 use App\Http\Controllers\Controller;

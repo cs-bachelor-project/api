@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Company;
+namespace App\Http\Controllers\Subscription;
 
 use App\Http\Controllers\Controller;
 use App\Traits\Planable;
@@ -48,7 +48,7 @@ class SubscriptionController extends Controller
         if ($current_drivers > $new_max_drivers->value) {
             return response()->json([
                 'errors' => [
-                    "You must delete {$diff} driver(s) to change downgrade."
+                    "You must delete {$diff} driver(s) to downgrade."
                 ]
             ], 400);
         }

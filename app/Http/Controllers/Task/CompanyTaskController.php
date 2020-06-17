@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Company;
+namespace App\Http\Controllers\Task;
 
 use App\Events\TaskAssigned;
 use App\Events\TaskUnassigned;
@@ -12,7 +12,7 @@ use App\Http\Resources\TaskResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class TaskController extends Controller
+class CompanyTaskController extends Controller
 {
     protected $rules = [
         'person_name' => 'required|max:255',
@@ -196,7 +196,7 @@ class TaskController extends Controller
         if ($request->get('status') == 'cancelled') {
             $tasks = $tasks->has('cancellation');
         }
-        
+
         return TaskResource::collection(withRelations($tasks->orderBy('id', 'desc')->paginate(10)->appends($request->except(['page', 'token']))))->response()->setStatusCode(200);
     }
 }

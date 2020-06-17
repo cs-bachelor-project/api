@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Driver;
+namespace App\Http\Controllers\Task;
 
+use App\Events\TaskCancelled;
 use App\Events\TaskDetailCompleted;
 use App\Http\Controllers\Controller;
-use App\Models\TaskDetail;
-use Illuminate\Http\Request;
 use App\Http\Resources\TaskDetailResource;
+use Illuminate\Http\Request;
+use App\Models\Task;
+use App\Models\TaskDetail;
 use Carbon\Carbon;
 
-class TaskDetailController extends Controller
+class DriverTaskController extends Controller
 {
     public function __construct()
     {
@@ -23,7 +25,6 @@ class TaskDetailController extends Controller
      */
     public function index(Request $request)
     {
-
         $date = $request->get('date') ? Carbon::createFromFormat('Y-m-d', $request->get('date'))->toDateString() : Carbon::today()->toDateString();
 
         $tasks = TaskDetail::whereDate('scheduled_at', $date)->whereHas('task', function ($q) {
@@ -49,5 +50,21 @@ class TaskDetailController extends Controller
         event(new TaskDetailCompleted($detail));
 
         return response()->json(['message' => 'Marked as completed']);
+    }
+
+    /**
+     * Add Task to cancellation
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel(Request $request, Task $task)
+    {
+        $task->cancellation()->create([
+            'reason' => $request->get('reason'),
+        ]);
+
+        event(new TaskCancelled($task, $task->company_id));
+
+        return response()->json(['message' => 'Marked as cancelled']);
     }
 }
