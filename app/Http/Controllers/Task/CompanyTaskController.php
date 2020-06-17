@@ -87,15 +87,15 @@ class CompanyTaskController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
 
-        $task = Task::create($request->except('details'));
+        DB::transaction(function () use ($request) {
+            $task = Task::create($request->except('details'));
 
-        if ($request->get('details')) {
             $task->details()->createMany($request->get('details'));
-        }
 
-        if ($request->get('user_id') != null) {
-            event(new TaskAssigned($task));
-        }
+            if ($request->get('user_id') != null) {
+                event(new TaskAssigned($task));
+            }
+        });
 
         return response()->json(['message' => "The task was created successfully."]);
     }
