@@ -71,6 +71,10 @@ Route::group(['namespace' => 'Task'], function () {
     });
 });
 
+Route::group(['prefix' => 'companies', 'namespace' => 'Statistics', 'middleware' => 'auth:api'], function () {
+    Route::get('statistics/tasks', 'TaskStatisticsController@index')->name('statistics.tasks');
+});
+
 Route::group(['prefix' => 'companies', 'namespace' => 'Message', 'middleware' => 'auth:api'], function () {
     Route::post('messages', 'MessageController@store')->name('messages.store');
 });

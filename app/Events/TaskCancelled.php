@@ -57,6 +57,10 @@ class TaskCancelled implements ShouldBroadcast
         return [
             'id' => $this->task->id,
             'person_name' => $this->task->person_name,
+            'cancellation' => [
+                'reason' => $this->task->cancellation->reason,
+                'created_at' => $this->task->cancellation->created_at->format('Y-m-d'),
+            ]
         ];
     }
 }
