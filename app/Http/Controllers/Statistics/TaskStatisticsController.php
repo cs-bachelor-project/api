@@ -19,9 +19,18 @@ class TaskStatisticsController extends Controller
      */
     public function index()
     {
+        $from = request()->get('from');
+        $to = request()->get('to');
+
         $cancellations = TaskCancellation::whereHas('task', function ($query) {
             $query->where('company_id', auth()->user()->company_id);
-        })->get(['reason', 'created_at'])->groupBy('reason');
+        });
+
+        if ($from && $to) {
+            $cancellations = $cancellations->whereBetween('created_at', [date($from), date($to)]);
+        }
+
+        $cancellations = $cancellations->get(['reason', 'created_at'])->groupBy('reason');
 
         $rs = [];
         foreach ($cancellations as $reason => $val) {
