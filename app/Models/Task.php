@@ -62,7 +62,7 @@ class Task extends Model
     {
         return $query->whereHas('details', function ($q) {
             return $q->whereNull('completed_at');
-        });
+        })->whereDoesntHave('cancellation');;
     }
 
     /**
