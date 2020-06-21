@@ -32,7 +32,7 @@ class TaskTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->get('/api/companies/tasks', [
+        $response = $this->get('/v1/companies/tasks', [
             "Authorization" => "Bearer {$this->token}"
         ]);
 
