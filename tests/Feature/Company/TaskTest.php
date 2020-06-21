@@ -42,6 +42,7 @@ class TaskTest extends TestCase
                     'id',
                     'person_name',
                     'note',
+                    'user_name',
                     'user_id',
                 ]
             ],
