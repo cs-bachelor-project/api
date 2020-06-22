@@ -60,6 +60,7 @@ class TaskUpdated implements ShouldBroadcast
                 'id' => $detail->id,
                 'country' => $detail->country,
                 'city' => $detail->city,
+                'postal' => $detail->postal,
                 'street' => $detail->street,
                 'street_number' => $detail->street_number,
                 'phone' => $detail->phone,
